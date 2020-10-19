@@ -29,7 +29,7 @@ module clm_initializeMod
 
   use clm_instMod
   use SoilMoistureStreamMod, only : PrescribedSoilMoistureInit
-  ! 
+  !
   implicit none
   private  ! By default everything is private
 
@@ -50,8 +50,8 @@ contains
     use clm_varpar       , only: clm_varpar_init, natpft_lb, natpft_ub, cft_lb, cft_ub, maxpatch_glcmec, nlevsoi
     use clm_varcon       , only: clm_varcon_init
     use landunit_varcon  , only: landunit_varcon_init, max_lunit
-    use clm_varctl       , only: fsurdat, fatmlndfrc, noland, version  
-    use pftconMod        , only: pftcon       
+    use clm_varctl       , only: fsurdat, fatmlndfrc, noland, version
+    use pftconMod        , only: pftcon
     use decompInitMod    , only: decompInit_lnd, decompInit_clumps, decompInit_glcp, decompInit_lnd3D
     use decompInitMod    , only: decompInit_ocn
     use domainMod        , only: domain_check, ldomain, domain_init
@@ -280,7 +280,7 @@ contains
     ! !USES:
     use shr_orb_mod           , only : shr_orb_decl
     use shr_scam_mod          , only : shr_scam_getCloseLatLon
-    use seq_drydep_mod        , only : n_drydep, drydep_method, DD_XLND
+    use seq_drydep_mod        , only : n_drydep
     use accumulMod            , only : print_accum_fields
     use clm_varpar            , only : nlevsno
     use clm_varcon            , only : spval
@@ -500,7 +500,7 @@ contains
        ! NOTE(wjs, 2016-02-23) Maybe the rest of the body of this conditional should also
        ! be moved into bgc_vegetation_inst%Init2
 
-       if (n_drydep > 0 .and. drydep_method == DD_XLND) then
+       if (n_drydep > 0) then
           ! Must do this also when drydeposition is used so that estimates of monthly
           ! differences in LAI can be computed
           call SatellitePhenologyInit(bounds_proc)
@@ -517,7 +517,7 @@ contains
        call SatellitePhenologyInit(bounds_proc)
     end if
 
-    if(use_soil_moisture_streams) then 
+    if(use_soil_moisture_streams) then
        call PrescribedSoilMoistureInit(bounds_proc)
     endif
 
@@ -687,7 +687,7 @@ contains
     ! Even if CN is on, and dry-deposition is active, read CLMSP annual vegetation
     ! to get estimates of monthly LAI
 
-    if ( n_drydep > 0 .and. drydep_method == DD_XLND )then
+    if ( n_drydep > 0 )then
        call readAnnualVegetation(bounds_proc, canopystate_inst)
        if (nsrest == nsrStartup .and. finidat /= ' ') then
           ! Call interpMonthlyVeg for dry-deposition so that mlaidiff will be calculated

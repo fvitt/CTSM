@@ -173,7 +173,7 @@ OPTIONS
                               when determining what input initial condition file to use.
      -ignore_ic_year          Ignore just the year part of the date on the initial condition files
                               when determining what input initial condition file to use.
-     -ignore_warnings         Allow build-namelist to continue, rather than stopping on 
+     -ignore_warnings         Allow build-namelist to continue, rather than stopping on
                               warnings
      -infile "filepath"       Specify a file (or list of files) containing namelists to
                               read values from.
@@ -765,7 +765,7 @@ sub setup_cmdl_fates_mode {
       }
     } else {
        # dis-allow fates specific namelist items with non-fates runs
-       my @list  = (  "use_fates_spitfire", "use_fates_planthydro", "use_fates_ed_st3", "use_fates_ed_prescribed_phys", 
+       my @list  = (  "use_fates_spitfire", "use_fates_planthydro", "use_fates_ed_st3", "use_fates_ed_prescribed_phys",
                       "use_fates_inventory_init", "fates_inventory_ctrl_filename","use_fates_logging","fates_parteh_mode" );
        foreach my $var ( @list ) {
           if ( defined($nl->get_value($var)) ) {
@@ -1205,7 +1205,7 @@ sub setup_cmdl_run_type {
   }
   if (defined $opts->{$var}) {
     if ($opts->{$var} eq "default" ) {
-      add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var, 
+      add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var,
                   'use_cndv'=>$nl_flags->{'use_cndv'}, 'use_fates'=>$nl_flags->{'use_fates'},
                   'sim_year'=>$st_year );
     } else {
@@ -1213,7 +1213,7 @@ sub setup_cmdl_run_type {
       $nl->set_variable_value($group, $var, quote_string( $opts->{$var} ) );
     }
   } else {
-    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var, 
+    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var,
                   'use_cndv'=>$nl_flags->{'use_cndv'}, 'use_fates'=>$nl_flags->{'use_fates'},
                   'sim_year'=>$st_year );
   }
@@ -1253,7 +1253,7 @@ sub setup_cmdl_dynamic_vegetation {
         my @valid_values   = $definition->get_valid_values( $var );
         $log->fatal_error("$var has a value ($val) that is NOT valid. Valid values are: @valid_values");
      }
-     $log->warning("The use_cndv=T option is deprecated. We do NOT recommend using it." . 
+     $log->warning("The use_cndv=T option is deprecated. We do NOT recommend using it." .
                    " It's known to have issues and it's not calibrated.");
   }
 }
@@ -1929,7 +1929,7 @@ sub setup_logic_params_file {
   # get param data
   my ($opts, $nl_flags, $definition, $defaults, $nl) = @_;
 
-  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'paramfile', 
+  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'paramfile',
               'phys'=>$nl_flags->{'phys'},
               'use_flexibleCN'=>$nl_flags->{'use_flexibleCN'} );
 }
@@ -1941,7 +1941,7 @@ sub setup_logic_create_crop_landunit {
   my ($opts, $nl_flags, $definition, $defaults, $nl) = @_;
 
   my $var = 'create_crop_landunit';
-  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var, 
+  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var,
               'use_fates'=>$nl_flags->{'use_fates'} );
   if ( &value_is_true($nl_flags->{'use_fates'}) && &value_is_true($nl->get_value($var)) ) {
      $log->fatal_error( "$var is true and yet use_fates is being set, which contradicts that (use_fates requires $var to be .false." );
@@ -1988,7 +1988,7 @@ sub setup_logic_cnfire {
         } else {
            my $fire_method = remove_leading_and_trailing_quotes( $nl->get_value('fire_method') );
            add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $item,
-                       'lnd_tuning_mode'=>$nl_flags->{'lnd_tuning_mode'}, 
+                       'lnd_tuning_mode'=>$nl_flags->{'lnd_tuning_mode'},
                        'fire_method'=>$fire_method );
         }
      }
@@ -2243,20 +2243,20 @@ sub setup_logic_initial_conditions {
     #
     if (string_is_undef_or_empty($nl->get_value('flanduse_timeseries'))) {
        $settings{'sim_year'}     = $nl_flags->{'sim_year'};
-       $opts->{'ignore_ic_year'} = 1; 
+       $opts->{'ignore_ic_year'} = 1;
     } else {
        $settings{'sim_year'}     = $st_year;
     }
-    foreach my $item ( "mask", "maxpft", "irrigate", "glc_nec", "use_crop", "use_cn", "use_cndv", 
+    foreach my $item ( "mask", "maxpft", "irrigate", "glc_nec", "use_crop", "use_cn", "use_cndv",
                        "use_nitrif_denitrif", "use_vertsoilc", "use_century_decomp", "use_fates",
-                       "lnd_tuning_mode", 
+                       "lnd_tuning_mode",
                      ) {
        $settings{$item}    = $nl_flags->{$item};
     }
     if ($opts->{'ignore_ic_date'}) {
       if ( &value_is_true($nl_flags->{'use_crop'}) ) {
-        $log->warning("using ignore_ic_date is incompatable with crop! If you choose to ignore this error, " . 
-                      "the counters since planting for crops will be messed up. \nSo you should ignore at " . 
+        $log->warning("using ignore_ic_date is incompatable with crop! If you choose to ignore this error, " .
+                      "the counters since planting for crops will be messed up. \nSo you should ignore at " .
                       "least the first season for crops. And since it will impact the 20 year means, ideally the " .
                       "first 20 years should be ignored.");
       }
@@ -2330,9 +2330,9 @@ SIMYR:    foreach my $sim_yr ( @sim_years ) {
              }
           } else {
              my $stat = add_default($opts,  $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, "init_interp_attributes",
-                                 'sim_year'=>$settings{'sim_year'}, 'use_cndv'=>$nl_flags->{'use_cndv'}, 
+                                 'sim_year'=>$settings{'sim_year'}, 'use_cndv'=>$nl_flags->{'use_cndv'},
                                  'glc_nec'=>$nl_flags->{'glc_nec'}, 'use_fates'=>$nl_flags->{'use_fates'},
-                                 'hgrid'=>$nl_flags->{'res'}, 
+                                 'hgrid'=>$nl_flags->{'res'},
                                  'use_cn'=>$nl_flags->{'use_cn'}, 'lnd_tuning_mode'=>$nl_flags->{'lnd_tuning_mode'}, 'nofail'=>1 );
              if ( $stat ) {
                 $log->fatal_error("$useinitvar is NOT synchronized with init_interp_attributes");
@@ -2813,9 +2813,9 @@ sub setup_logic_methane {
     # Get resolution to read streams file for
     #
     my $finundation_method = remove_leading_and_trailing_quotes($nl->get_value('finundation_method' ));
-    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'finundation_res', 
+    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'finundation_res',
              'finundation_method'=>$finundation_method );
-    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'stream_fldfilename_ch4finundated', 
+    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'stream_fldfilename_ch4finundated',
              'finundation_method'=>$finundation_method,
              'finundation_res'=>$nl->get_value('finundation_res') );
     add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'use_aereoxid_prog',
@@ -3065,7 +3065,7 @@ sub setup_logic_c_isotope {
         my $use_c13_timeseries = $nl->get_value('use_c13_timeseries');
         if ( defined($use_c13_timeseries) && &value_is_true($use_c13_timeseries) ) {
            add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'atm_c13_filename',
-                   'use_c13'=>$use_c13, 'use_cn'=>$nl_flags->{'use_cn'}, 'use_c13_timeseries'=>$nl->get_value('use_c13_timeseries'), 
+                   'use_c13'=>$use_c13, 'use_cn'=>$nl_flags->{'use_cn'}, 'use_c13_timeseries'=>$nl->get_value('use_c13_timeseries'),
                    'ssp_rcp'=>$nl_flags->{'ssp_rcp'} );
         }
       } else {
@@ -3106,10 +3106,10 @@ sub setup_logic_nitrogen_deposition {
                 'use_cn'=>$nl_flags->{'use_cn'}, 'hgrid'=>$nl_flags->{'res'},
                 'clm_accelerated_spinup'=>$nl_flags->{'clm_accelerated_spinup'} );
     add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'ndep_taxmode', 'phys'=>$nl_flags->{'phys'},
-                'use_cn'=>$nl_flags->{'use_cn'}, 
+                'use_cn'=>$nl_flags->{'use_cn'},
                 'lnd_tuning_mode'=>$nl_flags->{'lnd_tuning_mode'} );
     add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'ndep_varlist', 'phys'=>$nl_flags->{'phys'},
-                'use_cn'=>$nl_flags->{'use_cn'}, 
+                'use_cn'=>$nl_flags->{'use_cn'},
                 'lnd_tuning_mode'=>$nl_flags->{'lnd_tuning_mode'} );
     add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'stream_year_first_ndep', 'phys'=>$nl_flags->{'phys'},
                 'use_cn'=>$nl_flags->{'use_cn'}, 'sim_year'=>$nl_flags->{'sim_year'},
@@ -3198,7 +3198,7 @@ sub setup_logic_photosyns {
   add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults,
               $nl, 'modifyphoto_and_lmr_forcrop', 'phys'=>$nl_flags->{'phys'} );
   add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults,
-              $nl, 'stomatalcond_method', 'phys'=>$nl_flags->{'phys'}, 
+              $nl, 'stomatalcond_method', 'phys'=>$nl_flags->{'phys'},
               'use_hydrstress'=>$nl_flags->{'use_hydrstress'} );
   # When CN on, must NOT be scaled by vcmax25top
   if ( &value_is_true( $nl_flags->{'use_cn'} ) ) {
@@ -3330,11 +3330,11 @@ sub setup_logic_dry_deposition {
 
   if ($opts->{'drydep'} ) {
     add_default($opts,  $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'drydep_list');
-    add_default($opts,  $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'drydep_method');
+    add_default($opts,  $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'dep_data_file');
   } else {
     if ( defined($nl->get_value('drydep_list')) ||
-         defined($nl->get_value('drydep_method')) ) {
-      $log->fatal_error("drydep_list or drydep_method defined, but drydep option NOT set");
+         defined($nl->get_value('dep_data_file')) ) {
+      $log->fatal_error("drydep_list or dep_data_file defined, but drydep option NOT set");
     }
   }
 }
@@ -3427,8 +3427,8 @@ sub setup_logic_soilm_streams {
               defined($nl->get_value('soilm_tintalgo')) ||
               defined($nl->get_value('soilm_offset')) ||
               defined($nl->get_value('stream_year_last_soilm')) ) {
-             $log->fatal_error("One of the soilm streams namelist items (stream_year_first_soilm, " . 
-                                " model_year_align_soilm, stream_fldfilename_soilm, stream_fldfilename_soilm)" . 
+             $log->fatal_error("One of the soilm streams namelist items (stream_year_first_soilm, " .
+                                " model_year_align_soilm, stream_fldfilename_soilm, stream_fldfilename_soilm)" .
                                 " soilm_tintalgo soilm_offset" .
                                 " is defined, but use_soil_moisture_streams option NOT set to true");
          }
@@ -3491,7 +3491,7 @@ sub setup_logic_soilwater_movement {
 
   my $soilmtd = $nl->get_value("soilwater_movement_method");
   my $use_bed = $nl->get_value('use_bedrock'              );
-  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 
+  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl,
               'lower_boundary_condition', 'vichydro'=>$nl_flags->{'vichydro'},
               'soilwater_movement_method'=>$soilmtd, 'use_bedrock'=>$use_bed
              );
@@ -3514,9 +3514,9 @@ sub setup_logic_century_soilbgcdecompcascade {
     add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'initial_Cstocks',
                 'use_cn' => $nl->get_value('use_cn'), 'use_fates' => $nl->get_value('use_fates'),
                 'use_century_decomp' => $nl->get_value('use_century_decomp') );
-    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'initial_Cstocks_depth', 
+    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'initial_Cstocks_depth',
                 'use_cn' => $nl->get_value('use_cn'), 'use_fates' => $nl->get_value('use_fates'),
-                'use_century_decomp' => $nl->get_value('use_century_decomp') ); 
+                'use_century_decomp' => $nl->get_value('use_century_decomp') );
   }
 }
 
@@ -3529,7 +3529,7 @@ sub setup_logic_cnvegcarbonstate {
   if ( &value_is_true($nl->get_value('use_cn')) ) {
     my $mmnuptake = $nl->get_value('mm_nuptake_opt');
     if ( ! defined($mmnuptake) ) { $mmnuptake = ".false."; }
-    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'initial_vegC', 
+    add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'initial_vegC',
                 'use_cn' => $nl->get_value('use_cn'), 'mm_nuptake_opt' => $mmnuptake );
   }
 }
@@ -3542,8 +3542,8 @@ sub setup_logic_cngeneral {
 
   if ( &value_is_true($nl->get_value('use_cn')) ) {
     if ( &value_is_true($nl->get_value('use_crop')) ) {
-       add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'dribble_crophrv_xsmrpool_2atm', 
-                   'co2_type' => remove_leading_and_trailing_quotes($nl->get_value('co2_type')), 
+       add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'dribble_crophrv_xsmrpool_2atm',
+                   'co2_type' => remove_leading_and_trailing_quotes($nl->get_value('co2_type')),
                    'use_crop' => $nl->get_value('use_crop')  );
     } else {
       if ( defined($nl->get_value('dribble_crophrv_xsmrpool_2atm')) ) {
@@ -3782,7 +3782,7 @@ sub setup_logic_fates {
 
     if (&value_is_true( $nl_flags->{'use_fates'})  ) {
         add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, 'fates_paramfile', 'phys'=>$nl_flags->{'phys'});
-        my @list  = (  "use_fates_spitfire", "use_fates_planthydro", "use_fates_ed_st3", "use_fates_ed_prescribed_phys", 
+        my @list  = (  "use_fates_spitfire", "use_fates_planthydro", "use_fates_ed_st3", "use_fates_ed_prescribed_phys",
                        "use_fates_inventory_init", "use_fates_logging","fates_parteh_mode" );
         foreach my $var ( @list ) {
  	  add_default($opts, $nl_flags->{'inputdata_rootdir'}, $definition, $defaults, $nl, $var, 'use_fates'=>$nl_flags->{'use_fates'} );
@@ -3824,7 +3824,7 @@ sub write_output_files {
   @groups = qw(clm_inparm ndepdyn_nml popd_streams urbantv_streams light_streams
                soil_moisture_streams lai_streams atm2lnd_inparm lnd2atm_inparm clm_canopyhydrology_inparm cnphenology
                clm_soilhydrology_inparm dynamic_subgrid cnvegcarbonstate
-               finidat_consistency_checks dynpft_consistency_checks 
+               finidat_consistency_checks dynpft_consistency_checks
                clm_initinterp_inparm century_soilbgcdecompcascade
                soilhydrology_inparm luna friction_velocity mineral_nitrogen_dynamics
                soilwater_movement_inparm rooting_profile_inparm

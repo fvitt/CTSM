@@ -68,7 +68,7 @@ module clm_driver
   use lnd2atmMod             , only : lnd2atm
   use lnd2glcMod             , only : lnd2glc_type
   !
-  use seq_drydep_mod         , only : n_drydep, drydep_method, DD_XLND
+  use seq_drydep_mod         , only : n_drydep
   use DryDepVelocity         , only : depvel_compute
   !
   use DaylengthMod           , only : UpdateDaylength
@@ -225,7 +225,7 @@ contains
 
     if (use_cn) then
        ! For dry-deposition need to call CLMSP so that mlaidiff is obtained
-       if ( n_drydep > 0 .and. drydep_method == DD_XLND ) then
+       if ( n_drydep > 0 ) then
           call t_startf('interpMonthlyVeg')
           call interpMonthlyVeg(bounds_proc, canopystate_inst)
           call t_stopf('interpMonthlyVeg')
@@ -238,7 +238,7 @@ contains
        ! vegetation top [mhvt1,mhvt2] and vegetation bottom [mhvb1,mhvb2]. The
        ! weights obtained here are used in subroutine SatellitePhenology to obtain time
        ! interpolated values.
-       if (doalb .or. ( n_drydep > 0 .and. drydep_method == DD_XLND )) then
+       if (doalb .or. ( n_drydep > 0 )) then
           call t_startf('interpMonthlyVeg')
           call interpMonthlyVeg(bounds_proc, canopystate_inst)
           call t_stopf('interpMonthlyVeg')
@@ -433,7 +433,7 @@ contains
 
     ! When LAI streams are being used
     ! NOTE: This call needs to happen outside loops over nclumps (as streams are not threadsafe)
-    if ((.not. use_cn) .and. (.not. use_fates) .and. (doalb) .and. use_lai_streams) then 
+    if ((.not. use_cn) .and. (.not. use_fates) .and. (doalb) .and. use_lai_streams) then
        call lai_advance( bounds_proc )
     endif
 
@@ -1083,7 +1083,7 @@ contains
                 clm_fates, nc)
        end if
 
-       
+
        ! ============================================================================
        ! Create summaries of water diagnostic terms
        ! ============================================================================
