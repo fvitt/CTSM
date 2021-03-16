@@ -57,22 +57,18 @@ Module DryDepVelocity
   use shr_log_mod          , only : errMsg => shr_log_errMsg
   use shr_kind_mod         , only : r8 => shr_kind_r8
   use abortutils           , only : endrun
-  use clm_time_manager     , only : get_nstep, get_curr_date, get_curr_time
-  use spmdMod              , only : masterproc
   use seq_drydep_mod       , only : n_drydep, drydep_list
   use seq_drydep_mod       , only : index_o3=>o3_ndx, index_o3a=>o3a_ndx, index_so2=>so2_ndx, index_h2=>h2_ndx
   use seq_drydep_mod       , only : index_co=>co_ndx, index_ch4=>ch4_ndx, index_pan=>pan_ndx
-  use seq_drydep_mod       , only : index_xpan=>xpan_ndx
   use decompMod            , only : bounds_type
   use clm_varcon           , only : namep
   use atm2lndType          , only : atm2lnd_type
   use CanopyStateType      , only : canopystate_type
   use FrictionVelocityMod  , only : frictionvel_type
   use PhotosynthesisMod    , only : photosyns_type
-  use WaterStateBulkType       , only : waterstatebulk_type
-  use WaterDiagnosticBulkType       , only : waterdiagnosticbulk_type
-  use Wateratm2lndBulkType       , only : wateratm2lndbulk_type
-  use GridcellType         , only : grc
+  use WaterStateBulkType   , only : waterstatebulk_type
+  use WaterDiagnosticBulkType, only : waterdiagnosticbulk_type
+  use Wateratm2lndBulkType , only : wateratm2lndbulk_type
   use LandunitType         , only : lun
   use PatchType            , only : patch
   !
@@ -190,7 +186,7 @@ CONTAINS
     ! !USES:
     use shr_const_mod  , only : tmelt => shr_const_tkfrz
     use seq_drydep_mod , only : seq_drydep_setHCoeff, mapping, drat, foxd
-    use seq_drydep_mod , only : rcls, h2_a, h2_b, h2_c, ri, rac, rclo, rlu, rgss, rgso
+    use seq_drydep_mod , only : rcls, h2_a, h2_b, h2_c, rac, rclo, rlu, rgss, rgso
     use landunit_varcon, only : istsoil, istice_mec, istdlak, istwet
     use clm_varctl     , only : iulog
     use pftconMod      , only : noveg, ndllf_evr_tmp_tree, ndllf_evr_brl_tree
@@ -208,9 +204,9 @@ CONTAINS
     type(bounds_type)      , intent(in)    :: bounds
     type(atm2lnd_type)     , intent(in)    :: atm2lnd_inst
     type(canopystate_type) , intent(in)    :: canopystate_inst
-    type(waterstatebulk_type)  , intent(in)    :: waterstatebulk_inst
-    type(waterdiagnosticbulk_type)  , intent(in)    :: waterdiagnosticbulk_inst
-    type(wateratm2lndbulk_type)  , intent(in)    :: wateratm2lndbulk_inst
+    type(waterstatebulk_type), intent(in)    :: waterstatebulk_inst
+    type(waterdiagnosticbulk_type), intent(in)    :: waterdiagnosticbulk_inst
+    type(wateratm2lndbulk_type), intent(in)    :: wateratm2lndbulk_inst
     type(frictionvel_type) , intent(in)    :: frictionvel_inst
     type(photosyns_type)   , intent(in)    :: photosyns_inst
     type(drydepvel_type)   , intent(inout) :: drydepvel_inst
@@ -220,13 +216,9 @@ CONTAINS
     real(r8) :: soilw, var_soilw, fact_h2, dv_soil_h2
     integer  :: pi,g, l
     integer  :: ispec
-    integer  :: length
     integer  :: wesveg       !wesely vegegation index
     integer  :: clmveg       !clm veg index from ivegtype
-    integer  :: i
     integer  :: index_season !seasonal index based on LAI.  This indexs wesely data tables
-    integer  :: nstep        !current step
-    integer  :: indexp
 
     real(r8) :: pg           ! surface pressure
     real(r8) :: tc           ! temperature in celsius
@@ -234,14 +226,10 @@ CONTAINS
     real(r8) :: ws           ! saturation mixing ratio
     real(r8) :: rmx          ! resistance by vegetation
     real(r8) :: qs           ! saturation specific humidity
-    real(r8) :: dewm         ! multiplier for rs when dew occurs
-    real(r8) :: crs          ! multiplier to calculate crs
     real(r8) :: rdc          ! part of lower canopy resistance
     real(r8) :: rain         ! rain fall
     real(r8) :: spec_hum     ! specific humidity
     real(r8) :: solar_flux   ! solar radiation(direct beam) W/m2
-    real(r8) :: lat          ! latitude in degrees
-    real(r8) :: lon          ! longitude in degrees
     real(r8) :: sfc_temp     ! surface temp
     real(r8) :: minlai       ! minimum of monthly lai
     real(r8) :: maxlai       ! maximum of monthly lai
@@ -322,8 +310,6 @@ CONTAINS
             rain       = forc_rain(c)
             sfc_temp   = forc_t(c)
             solar_flux = forc_solad(g,1)
-            lat        = grc%latdeg(g)
-            lon        = grc%londeg(g)
             clmveg     = patch%itype(pi)
             soilw      = h2osoi_vol(c,1)
 
@@ -433,12 +419,6 @@ CONTAINS
             end if
 
             has_rain = rain > rain_threshold
-
-            if ( has_dew .or. has_rain ) then
-               dewm = 3._r8
-            else
-               dewm = 1._r8
-            end if
 
             !Define tc
             tc = sfc_temp - tmelt
